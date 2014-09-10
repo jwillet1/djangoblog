@@ -1,0 +1,20 @@
+{
+  "name": "django_tutorial_blog_ng",
+  "version": "0.0.0",
+  "authors": [
+    "Joshua Willett <jwillet1@gmail.com>"
+  ],
+  "description": "Blog enigne to teach me how django for Python works",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.2.0",
+    "html5-boilerplate": "~4.3.0"
+  }
+}
