@@ -16,6 +16,7 @@ class PostTest(TestCase):
         # add attributes
         tag.name = 'python'
         tag.description = 'The Python programming language'
+        tag.slug = 'python'
 
         # save it
         tag.save()
@@ -26,6 +27,11 @@ class PostTest(TestCase):
         only_tag = all_tags[0]
         self.assertEquals(only_tag, tag)
 
+        # check attributes
+        self.assertEquals(only_tag.name, 'python')
+        self.assertEquals(only_tag.description, 'The Python programming language')
+        self.assertEquals(only_tag.slug, 'python')
+
     def test_create_category(self):
         # create category
         category = Category()
@@ -33,6 +39,7 @@ class PostTest(TestCase):
         # add attibutes
         category.name = 'python'
         category.description = 'The Python programming language'
+        category.slug = 'python'
 
         # save it
         category.save()
@@ -46,6 +53,7 @@ class PostTest(TestCase):
         # check attributes
         self.assertEquals(only_category.name, 'python')
         self.assertEquals(only_category.description, 'The Python programming language')
+        self.assertEquals(only_category.slug, 'python')
 
     def test_create_post(self):
         # create category
@@ -198,6 +206,41 @@ class AdminTest(BaseAcceptanceTest):
             'site': '1',
             'category': '%s' % category.id ,
             'tags': '%s' % tag.id
+        },
+        follow=True
+        )
+        self.assertEquals(response.status_code, 200)
+
+        # Check added successfully
+        self.assertTrue('added successfully' in response.content)
+
+        # Check new post now in database
+        all_posts = Post.objects.all()
+        self.assertEquals(len(all_posts), 1)
+
+    def test_creat_post_without_tag(self):
+        # Create the category
+        category = Category()
+        category.name = 'python'
+        category.description = 'The Python programming language'
+        category.save()
+
+        # Log in
+        self.client.login(username='bobsmith', password="password")
+
+        # Check response code
+        response = self.client.get('/admin/blogengine/post/add/')
+        self.assertEquals(response.status_code, 200)
+
+        # Create the new post
+        response = self.client.post('/admin/blogengine/post/add/', {
+            'title': 'My first post',
+            'text': 'This is my first post',
+            'pub_date_0': '2013-12-28',
+            'pub_date_1': '22:00:04',
+            'slug': 'my-first-post',
+            'site': '1',
+            'category': '%s' % category.id
         },
         follow=True
         )
@@ -724,6 +767,18 @@ class PostViewTest(BaseAcceptanceTest):
 
         # Check the link is marked up properly
         self.assertTrue('<a href="http://127.0.0.1:8000/">my first blog post</a>' in response.content)
+
+    def test_nonexistent_category_page(self):
+        category_url = '/category/blah'
+        response = self.client.get(category_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue('No posts found' in response.content)
+
+    def test_nonexistent_tag_page(self):
+        tag_url = '/tag/blah'
+        response = self.client.get(tag_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue('No posts found' in response.content)
 
 class FeedTest(BaseAcceptanceTest):
     def test_all_post_feed(self):
