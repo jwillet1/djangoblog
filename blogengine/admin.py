@@ -1,5 +1,6 @@
 import models
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
@@ -9,4 +10,5 @@ class PostAdmin(admin.ModelAdmin):
     	obj.author = request.user
     	obj.save()
 
+admin.site.register(models.Category)
 admin.site.register(models.Post, PostAdmin)
