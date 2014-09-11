@@ -34,7 +34,7 @@ class Tag(models.Model):
         super(Tag, self).save()
 
     def get_absolute_url(self):
-        return "/tag/%s" % (self.slug)
+        return "/tag/%s/" % (self.slug)
 
     def __unicode__(self):
         return self.name
