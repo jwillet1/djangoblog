@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from blogengine.views import CategoryListView, TagListView, PostsFeed
 
 admin.autodiscover()
 
@@ -15,4 +16,7 @@ urlpatterns = patterns('',
 
     # Flat pages
     url(r'', include('django.contrib.flatpages.urls')),
+    
+    # Post RSS feed
+url(r'^feeds/posts/$', PostsFeed()),
 )

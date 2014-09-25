@@ -5,7 +5,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from blogengine.models import Post, Category, Tag
 import markdown
-#import feedparser
+import feedparser
 
 # Create your tests here.
 class PostTest(TestCase):
@@ -827,16 +827,16 @@ class FeedTest(BaseAcceptanceTest):
         response = self.client.get('/feeds/posts/')
         self.assertEquals(response.status_code, 200)
 
-        # # parse the feed
-        # feed = feedparser.parse(response.content)
+        # parse the feed
+        feed = feedparser.parse(response.content)
 
-        # # check the length
-        # self.assertEquals(len(feed.entries), 1)
+        # check the length
+        self.assertEquals(len(feed.entries), 1)
 
-        # # check the post retrieved is correct
-        # feed_post = feed.entries[0]
-        # self.assertEquals(feed_post.title, post.title)
-        # self.assertEquals(feed_post.description, post.text)
+        # check the post retrieved is correct
+        feed_post = feed.entries[0]
+        self.assertEquals(feed_post.title, post.title)
+        self.assertEquals(feed_post.description, post.text)
 
 class FlatePageViewTest(BaseAcceptanceTest):
     def test_create_flat_page(self):
